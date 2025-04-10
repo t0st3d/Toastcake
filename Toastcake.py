@@ -1,7 +1,11 @@
-...m.termux/files/home/toastcake/toastcake.py
 import log_parser
 import time
 import toastcake_core
+import os
+TEST_MODE = os.getenv("TOASTCAKE_TEST", "false").lower() == "true"
+
+if TEST_MODE:
+    print("🚀 Running in Test Mode. No real data will be affected!")
 
 if __name__ == "__main__":
     print("🔍 Toastcake Log Monitor Running...")
