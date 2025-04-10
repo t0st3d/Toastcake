@@ -1,3 +1,7 @@
+import sys
+sys.path.append("/data/data/com.termux/files/home/toastflow")  # Ensure ToastFlow is accessible
+from tensor import Tensor
+from model import NeuralNet
 import log_parser
 import time
 import toastcake_core
@@ -54,6 +58,12 @@ def monitor_logs():
     except KeyboardInterrupt:
         print("\n🛑 Log monitoring stopped by user.")
 
+def ai_predict(user_input):
+    net = NeuralNet()
+    x = Tensor([float(ord(c)) for c in user_input[:2]])  # Convert first 2 chars to numbers
+    prediction = net.forward(x)
+    return f"Predicted output: {prediction.data}"
+
 def chat_response(user_input):
     responses = {
         "hello": "Hey there! How can I help?",
@@ -64,7 +74,7 @@ def chat_response(user_input):
     for key in responses:
         if key in user_input.lower():
             return responses[key]
-    return "I'm still learning. Can you rephrase that?"
+    return ai_predict(user_input)
 
 def chat_loop():
     print("💬 Toastcake Chat Mode. Type 'exit' to quit.")
