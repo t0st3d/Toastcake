@@ -2,6 +2,8 @@ import log_parser
 import time
 import toastcake_core
 import os
+from threading import Thread
+from flask import Flask
 
 TEST_MODE = os.getenv("TOASTCAKE_TEST", "false").lower() == "true"
 
@@ -13,6 +15,16 @@ LOG_FILE = "toastcake.log"
 # Ensure log file exists
 if not os.path.exists(LOG_FILE):
     open(LOG_FILE, "w").close()
+
+# Initialize Flask app
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "<h1>Toastcake Web Interface</h1><p>System is running...</p>"
+
+def run_web_interface():
+    app.run(host="0.0.0.0", port=5000, debug=False)  # Accessible over local network
 
 def monitor_logs():
     print("🔍 Toastcake Log Monitor Running...")
@@ -64,11 +76,13 @@ def chat_loop():
         print("Toastcake:", chat_response(user_input))
 
 if __name__ == "__main__":
-    from threading import Thread
-
     # Start log monitoring in a separate thread
     log_thread = Thread(target=monitor_logs, daemon=True)
     log_thread.start()
+
+    # Start web interface in a separate thread
+    web_thread = Thread(target=run_web_interface, daemon=True)
+    web_thread.start()
 
     # Start chatbot interaction
     chat_loop()
