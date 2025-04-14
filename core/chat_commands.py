@@ -1,2 +1,8 @@
+
 def parse_command(cmd):
-    return f'Parsed: {cmd}'
+    commands = {
+        "!quiet": "Silencing AI...",
+        "!analyze": "Analyzing logs...",
+        "!status": "Toastcake is active."
+    }
+    return commands.get(cmd, "Unknown command.")
